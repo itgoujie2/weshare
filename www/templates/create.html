@@ -1,0 +1,29 @@
+<ion-view>
+
+	<ion-nav-buttons side="right">
+		<button class="button button-clear" ng-click="save()">保存</button>
+	</ion-nav-buttons>
+	
+	<ion-content>
+		<div >
+            <div class="padding">
+                <img class="profile-pic light-border" ng-src="{{weshare.imgUrl}}" style="float: left;margin-right:8px;margin-bottom:8px;"/>
+                <div>
+                    <button class="button icon ion-camera button-light" ng-click="addPicture()" style="width: 68px;"></button><br/>
+                    <button class="button icon ion-ios-photos button-light" ng-click="addPicture('LIBRARY')" style="width: 68px;margin-top: 4px;"></button>
+                </div>
+            </div>
+            <div class="list list-inset" style="clear: both;margin-top: 0">
+                <label class="item item-input">
+                    <input type="text" placeholder="Wechat Id" ng-model="weshare.wechatId"/>
+                </label>
+                <label class="item item-input">
+                    <input type="text" placeholder="Title" ng-model="weshare.title"/>
+                </label>
+                <label class="item item-input">
+                    <textarea placeholder="Description" rows="10" ng-model="weshare.description" />
+                </label>
+            </div>
+        </div>
+	</ion-content>
+</ion-view>
