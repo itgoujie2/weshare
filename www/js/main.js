@@ -67,7 +67,8 @@ angular.module('weshare.main', [])
 				console.log('typeof: ' + typeof $scope.weshares);
 				if (weshares.length > 0){
 					$scope.weshares = $scope.weshares.concat(weshares);
-					console.log('weshares after concat: ' + $scope.weshares);
+					//console.log('weshares after concat: ' + JSON.stringify($scope.weshares));
+					console.log('first weshare: ' + JSON.stringify($scope.weshares[0].images[0].url));
 					$scope.$broadcast('scroll.infiniteScrollComplete');	
 					$scope.refresher = true;
 					$scope.last_displayed_stamp = new Date($scope.weshares[$scope.weshares.length-1].createdOn);
@@ -76,13 +77,11 @@ angular.module('weshare.main', [])
 					console.log('making refresher false');
 					$scope.refresher = false;
 				}
-				console.log('weshares in loadMore: ' + weshares);
-				console.log('called loadMore refresher: ' + $scope.refresher);
 			});
 		}
 	})
 
-	.controller('DetailCtrl', function($scope, $rootScope, $state, $stateParams, $cordovaClipboard, liked, Main){
+	.controller('DetailCtrl', function($scope, $rootScope, $state, $stateParams, $ionicModal, $cordovaClipboard, liked, Main){
 
 
 		$scope.weshare = {};
@@ -92,6 +91,7 @@ angular.module('weshare.main', [])
 
 		Main.get($stateParams.weshareId).success(function(weshare){
 			$scope.weshare = weshare;
+			console.log('weshare in detail: ' + JSON.stringify(weshare));
 		});
 
 		$scope.$watch('liked', function(newVal, oldVal){
@@ -115,6 +115,27 @@ angular.module('weshare.main', [])
 					console.log('copy fail');
 				})
 		}
+
+		$scope.showImages = function(index) {
+			$scope.activeSlide = index;
+			$scope.showModal('templates/image-popover.html');
+		}
+	 
+		$scope.showModal = function(templateUrl) {
+			$ionicModal.fromTemplateUrl(templateUrl, {
+				scope: $scope,
+				animation: 'slide-in-up'
+			}).then(function(modal) {
+				$scope.modal = modal;
+				$scope.modal.show();
+			});
+		}
+	 
+		// Close the modal
+		$scope.closeModal = function() {
+			$scope.modal.hide();
+			$scope.modal.remove()
+		};
 		
 
 	})
@@ -133,7 +154,7 @@ angular.module('weshare.main', [])
 					$scope.weshare = {};
 				})
 				.error(function(err){
-					$ionicPopup.alert({title: 'Oops', content: err});
+					//$ionicPopup.alert({title: 'Oops', content: err});
 				});
 
 			$state.go('main');
@@ -164,14 +185,15 @@ angular.module('weshare.main', [])
 			      		fileName = $rootScope.user.id + '_' + new Date().getTime() + '_' + tracker + ".jpg";
 			      		tracker++;
 				      	S3Uploader.upload(tempImage, fileName)
-				      		.then(function(){
-				      			$scope.weshare.images.push('https://s3-us-west-2.amazonaws.com/weshare-image/' + fileName);
+				      		.then(function(res){
+				      			$scope.weshare.images.push({url: res.headers.Location});
 				      		});		
 			      	}
 			      	$ionicLoading.hide();
 			      }, 30000);
 			    }, function(error) {
 			      // error getting photos
+			      console.log();
 			    });
 		}
 	})

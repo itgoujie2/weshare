@@ -19,7 +19,7 @@
             <!-- <a href="/#/weshares/{{weshare._id}}"> -->
             <a ui-sref="detail({weshareId: weshare._id})" style="text-decoration: none;">
                 <div class="item item-avatar item-button-right">
-                    <!-- <img src="weshare.images[0]" ng-show="weshare.images[0]"/> -->
+                    <img src="{{weshare.images[0].url}}" ng-show="{{weshare.images}}"/>
                     <h2>{{weshare.title}}</h2>
                     <p>{{weshare.createdOn | date: 'MM/d/y'}}</p>
                     <!-- <button class="button button-icon"><i class="ion-android-favorite"></i><h2>{{weshare.likes.num}}</h2></button> -->

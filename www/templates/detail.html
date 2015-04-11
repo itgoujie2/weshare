@@ -13,14 +13,14 @@
             <h2>WechatId: {{weshare.wechatId}}</h2><button class="button button-clear" ng-click="copy()">复制</button>
           </div>
           <div class="item item-body">
-              <!-- TODO: show qr code -->
-              <div ng-repeat="image in weshare.images">
-                <img class="full-image" src="{{image}}"/>
-              </div>
-              
-              <!-- <ion-scroll direction="x">
-                <img ng-repeat="image in images" ng-src="{{image.imgUrl}}" ng-click="showImages($index)" class="image-list-thumb"/>
-              </ion-scroll> -->
+              <!-- <div ng-repeat="image in weshare.images">
+                <img class="full-image" src="{{image.url}}"/>
+              </div> -->
+              <a class="item item-list-detail">
+                <ion-scroll direction="x">
+                  <img ng-repeat="image in weshare.images" ng-src="{{image.url}}" ng-click="showImages($index)" class="image-list-thumb"/>
+                </ion-scroll>
+              </a>
               <p>{{weshare.description}}</p>
 
           </div>
