@@ -59,6 +59,7 @@ angular.module('weshare.auth', [])
 
 			Auth.login($scope.user)
 				.success(function(data){
+					$scope.user = {};
 					$state.go('main');
 				})
 				.error(function(err){

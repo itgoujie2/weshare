@@ -38,7 +38,7 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
   //re-route to welcome page if not authenticaed
   $rootScope.$on('$stateChangeStart', function(event, toState){
     if (toState.name !== 'login' && toState.name !== 'signup' && toState.name !== 'logout' && toState.name !== 'welcome' && !$window.localStorage.getItem('token')){
-      console.log('toState: ' + toState);
+      console.log('toState: ' + JSON.stringify(toState));
       $state.go('welcome');
       event.preventDefault();
     }

@@ -35,12 +35,14 @@ angular.module('weshare.main', [])
 	/*
 	*	Controllers
 	*/
-	.controller('MainCtrl', function($scope, $rootScope, $state, $ionicPopup, Main){
+	.controller('MainCtrl', function($scope, $rootScope, $state, $ionicPopup, $cordovaImagePicker, $ionicLoading, S3Uploader, Main){
+
+		console.log('called MainCtrl');
 
 		/*
 		*	Main page
 		*/
-		$scope.weshares = {};
+		$scope.weshares = Main.weshares;
 
 		$scope.create = function(){
 			$state.go('create');
@@ -49,7 +51,6 @@ angular.module('weshare.main', [])
 		$scope.filter = function(){
 			$state.go('filter');
 		}
-
 		
 		// Main.loadMore(new Date).success(function(weshares){
 		// 	$scope.weshares = weshares;
@@ -57,28 +58,42 @@ angular.module('weshare.main', [])
 		// 	console.log('last_displayed_stamp in init: ' + $scope.last_displayed_stamp);
 		// })
 
-		$scope.weshares = [];
 		$scope.refresher = true;
 		$scope.loadMore = function(){
 
 			var last_displayed_stamp = $scope.last_displayed_stamp ? $scope.last_displayed_stamp : new Date;
 
-			Main.loadMore(last_displayed_stamp).success(function(weshares){
-				console.log('typeof: ' + typeof $scope.weshares);
-				if (weshares.length > 0){
-					$scope.weshares = $scope.weshares.concat(weshares);
-					//console.log('weshares after concat: ' + JSON.stringify($scope.weshares));
-					console.log('first weshare: ' + JSON.stringify($scope.weshares[0].images[0].url));
-					$scope.$broadcast('scroll.infiniteScrollComplete');	
-					$scope.refresher = true;
-					$scope.last_displayed_stamp = new Date($scope.weshares[$scope.weshares.length-1].createdOn);
-				}
-				else{
-					console.log('making refresher false');
-					$scope.refresher = false;
-				}
-			});
+			// Main.loadMore(last_displayed_stamp).success(function(weshares){
+			// 	console.log('typeof: ' + typeof $scope.weshares);
+			// 	if (weshares.length > 0){
+			// 		$scope.weshares = $scope.weshares.concat(weshares);
+			// 		//console.log('weshares after concat: ' + JSON.stringify($scope.weshares));
+			// 		$scope.$broadcast('scroll.infiniteScrollComplete');	
+			// 		$scope.refresher = true;
+			// 		$scope.last_displayed_stamp = new Date($scope.weshares[$scope.weshares.length-1].createdOn);
+			// 	}
+			// 	else{
+			// 		console.log('making refresher false');
+			// 		$scope.refresher = false;
+			// 	}
+			// });
+			Main.loadMore(last_displayed_stamp)
+				.success(function(data){
+					$scope.weshares = Main.weshares;
+						if (data.length > 0){
+							//console.log('weshares after concat: ' + JSON.stringify($scope.weshares));
+							$scope.$broadcast('scroll.infiniteScrollComplete');	
+							$scope.refresher = true;
+							$scope.last_displayed_stamp = new Date($scope.weshares[$scope.weshares.length-1].createdOn);
+						}
+						else{
+							console.log('making refresher false');
+							$scope.refresher = false;
+						}
+					});
 		}
+
+
 	})
 
 	.controller('DetailCtrl', function($scope, $rootScope, $state, $stateParams, $ionicModal, $cordovaClipboard, liked, Main){
@@ -142,6 +157,7 @@ angular.module('weshare.main', [])
 
 	.controller('CreateCtrl', function($scope, $rootScope, $state, $ionicPopup, $cordovaImagePicker, $ionicLoading, Main, S3Uploader){
 
+		console.log('called CreateCtrl');
 		/*
 		*	Create page
 		*/
@@ -149,15 +165,23 @@ angular.module('weshare.main', [])
 		$scope.save = function(){
 
 
-			Main.save($scope.weshare)
-				.success(function(data){
-					$scope.weshare = {};
-				})
-				.error(function(err){
-					//$ionicPopup.alert({title: 'Oops', content: err});
-				});
+			$ionicLoading.show({
+				template: '保存中...'
+			});
+			setTimeout(function(){
+				Main.save($scope.weshare)
+					.success(function(data){
+						$ionicLoading.hide();
+						$scope.weshare = {};
+						$state.go('main');
+					})
+					.error(function(err){
+						//$ionicPopup.alert({title: 'Oops', content: err});
+						console.log('create error: ' + err);
+					});	
+			}, 1000);
+			
 
-			$state.go('main');
 		}
 
 		$scope.addPicture = function(){
@@ -190,7 +214,7 @@ angular.module('weshare.main', [])
 				      		});		
 			      	}
 			      	$ionicLoading.hide();
-			      }, 30000);
+			      }, 1000);
 			    }, function(error) {
 			      // error getting photos
 			      console.log();
@@ -210,13 +234,25 @@ angular.module('weshare.main', [])
 	*/
 	.factory('Main', function($http, $rootScope){
 
-		var o = {}
+		var o = {
+			weshares : []
+		}
+
+		o.init = function(){
+			$http.get($rootScope.server.url + '/weshares')
+				.success(function(data){
+					o.weshares = data;
+				});
+		}
 
 		/*
 		*	Create Page
 		*/
 		o.save = function(weshare){
-			return $http.post($rootScope.server.url + '/weshares/create', weshare);	
+			return $http.post($rootScope.server.url + '/weshares/create', weshare)
+				.success(function(data){
+					o.weshares.unshift(data);
+				});	
 		}
 
 		/*
@@ -224,11 +260,17 @@ angular.module('weshare.main', [])
 		*/
 
 		o.all = function(){
-			return $http.get($rootScope.server.url + '/weshares');
+			return $http.get($rootScope.server.url + '/weshares')
+				.success(function(data){
+					o.weshares = o.weshares.concat(data);
+				});
 		}
 
 		o.loadMore = function(last_displayed_stamp){
-			return $http.get($rootScope.server.url + '/weshares/loadMore/' + last_displayed_stamp);
+			return $http.get($rootScope.server.url + '/weshares/loadMore/' + last_displayed_stamp)
+				.success(function(data){
+					o.weshares = o.weshares.concat(data);
+				});
 		}
 
 		o.get = function(weshareId){
