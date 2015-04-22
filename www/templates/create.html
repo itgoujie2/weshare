@@ -1,19 +1,19 @@
 <ion-view>
 
 	<ion-nav-buttons side="right">
-		<button class="button button-clear" ng-click="save()">保存</button>
+		<button class="button button-clear" ng-click="addPicture()">传图片</button>
 	</ion-nav-buttons>
 	
-	<ion-content>
+	<ion-content padding="true">
 		<div >
-            <div class="padding">
-                <img class="profile-pic light-border" ng-src="{{weshare.imgUrl}}" style="float: left;margin-right:8px;margin-bottom:8px;"/>
-                <div>
-                    <button class="button icon ion-camera button-light" ng-click="addPicture()" style="width: 68px;"></button><br/>
-                    <button class="button icon ion-ios-photos button-light" ng-click="addPicture('LIBRARY')" style="width: 68px;margin-top: 4px;"></button>
-                </div>
+            <div class="padding" ng-show="weshare.images.length > 0">
+                <a class="item item-list-detail">
+                    <ion-scroll direction="x">
+                      <img ng-repeat="image in weshare.images" ng-src="{{image.url}}" ng-click="showImages($index)" class="image-list-thumb"/>
+                    </ion-scroll>
+                </a>
             </div>
-            <div class="list list-inset" style="clear: both;margin-top: 0">
+            <div class="list list-inset" >
                 <label class="item item-input">
                     <input type="text" placeholder="Wechat Id" ng-model="weshare.wechatId"/>
                 </label>
@@ -21,8 +21,13 @@
                     <input type="text" placeholder="Title" ng-model="weshare.title"/>
                 </label>
                 <label class="item item-input">
-                    <textarea placeholder="Description" rows="10" ng-model="weshare.description" />
+                    <select ng-model="weshare.category" ng-options="category.title for category in categories"></select>
                 </label>
+                <label class="item item-input">
+                    <textarea placeholder="Description"  rows="15" ng-model="weshare.description">
+                    </textarea>
+                </label>
+                <button class="button button-block button-royal" ng-click="save()">保存</button>
             </div>
         </div>
 	</ion-content>

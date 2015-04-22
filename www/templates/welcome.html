@@ -1,9 +1,16 @@
-<ion-view >
+<ion-view class="welcome" hide-nav-bar="true">
 
-	<ion-content >
-		<a class="button button-stable" ui-sref="login">登录</a>
-		<a class="button button-stable" ui-sref="signup">申请</a>
-		<a class="button button-stable" ui-sref="main">主界面</a>
+	<ion-content scroll="false">
+		<div class="top-content row">
+			<div class="col col-center">
+				<h2>微分</h2>
+			</div>
+		</div>
+
+		<div class="bottom-content ">
+			<button class="login button button-block button-stable" ui-sref="login">登录</button>
+			<button class="sign-up button button-block button-stable" ui-sref="signup">注册</button>
+		</div>
 	</ion-content>
 
 </ion-view>

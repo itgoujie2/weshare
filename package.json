@@ -17,6 +17,7 @@
   "cordovaPlugins": [
     "https://github.com/VersoSolutions/CordovaClipboard",
     "https://github.com/wymsee/cordova-imagePicker.git",
-    "https://github.com/apache/cordova-plugin-file-transfer.git"
+    "https://github.com/apache/cordova-plugin-file-transfer.git",
+    "org.apache.cordova.splashscreen"
   ]
 }

@@ -5,29 +5,66 @@ angular.module('weshare.main', [])
 	*/
 	.config(function($stateProvider){
 		$stateProvider
-			.state('main', {
-				url: '/main',
-				templateUrl: 'templates/main.html',
-				controller: 'MainCtrl'
-			})
-			.state('create', {
-				url: '/create',
-				templateUrl: 'templates/create.html',
-				controller: 'CreateCtrl'
-			})
-			.state('filter', {
-				url: '/filter',
-				templateUrl: 'templates/filter.html',
-				controller: 'FilterCtrl'
-			})
-			.state('detail', {
-				url: '/weshares/:weshareId',
-				templateUrl: 'templates/detail.html',
-				controller: 'DetailCtrl',
-				resolve: {
-					liked: function($http, $stateParams, $rootScope){
-						return $http.get($rootScope.server.url + '/likes' + '?email=' + $rootScope.user.email + '&weshareId=' + $stateParams.weshareId);
+			// .state('main', {
+			// 	url: '/main/:categoryId',
+			// 	templateUrl: 'templates/main.html',
+			// 	controller: 'MainCtrl'
+			// })
+
+			.state('app', {
+		      url: '/app',
+		      abstract: true,
+		      templateUrl: 'templates/side-menu.html',
+		      controller: 'MainCtrl'
+		    })
+			.state('app.main', {
+				url: '/main/:categoryId',
+				views:{
+					'menuContent':{
+						templateUrl: 'templates/main.html',
+						controller: 'MainCtrl'
 					}
+				}
+			})
+			.state('app.create', {
+				url: '/create/:parentCategoryId',
+				views:{
+					'menuContent':{
+						templateUrl: 'templates/create.html',
+						controller: 'CreateCtrl'
+					}
+				}
+				
+			})
+			.state('app.filter', {
+				url: '/filter',
+				views:{
+					'menuContent':{
+						templateUrl: 'templates/filter.html',
+						controller: 'FilterCtrl'		
+					}
+				}
+			})
+			.state('app.detail', {
+				url: '/weshares/:weshareId',
+				views:{
+					'menuContent':{
+						templateUrl: 'templates/detail.html',
+						controller: 'DetailCtrl',
+						resolve: {
+							liked: function($http, $stateParams, $rootScope){
+								return $http.get($rootScope.server.url + '/likes' + '?email=' + $rootScope.user.email + '&weshareId=' + $stateParams.weshareId);
+							}
+						}
+					}
+				},
+				onExit: function(Main, $rootScope, $stateParams){
+								console.log('calling onExit');
+								Main.updateLiked({
+									email: $rootScope.user.email,
+									weshareId: $stateParams.weshareId,
+									liked: Main.liked
+								});
 				}
 			})
 	})
@@ -35,21 +72,43 @@ angular.module('weshare.main', [])
 	/*
 	*	Controllers
 	*/
-	.controller('MainCtrl', function($scope, $rootScope, $state, $ionicPopup, $cordovaImagePicker, $ionicLoading, S3Uploader, Main){
+	.controller('MainCtrl', function($scope, $rootScope, $state, $stateParams, $window, $location, $ionicPopup, $cordovaImagePicker, $ionicLoading, S3Uploader, Main){
 
 		console.log('called MainCtrl');
 
 		/*
 		*	Main page
 		*/
+		$scope.categoryId = $stateParams.categoryId;
+		// if (!!$stateParams.categoryId){
+		// 	console.log('called first block');
+		// 	$scope.categoryId = $stateParams.categoryId;
+		// 	$rootScope.categoryId = $stateParams.categoryId;
+		// }
+		// else if (!!$rootScope.categoryId){
+		// 	console.log('called second block');
+		// 	$scope.categoryId = $rootScope.categoryId;
+		// }
+		// else{
+		// 	console.log('called third block');
+		// 	//there is no category, kick out the user
+		// 	$window.localStorage.removeItem('token');
+  //           $window.localStorage.removeItem('user');
+  //           $location.href = $location.origin;
+  //           $location.path('/welcome');
+		// }
+		// Main.all($scope.categoryId);
 		$scope.weshares = Main.weshares;
+		$scope.user = $rootScope.user;
+
+		console.log('categoryId: ' + $scope.categoryId);
 
 		$scope.create = function(){
-			$state.go('create');
+			$state.go('app.create', {"parentCategoryId": $scope.categoryId});
 		}
 
 		$scope.filter = function(){
-			$state.go('filter');
+			$state.go('app.filter');
 		}
 		
 		// Main.loadMore(new Date).success(function(weshares){
@@ -77,11 +136,11 @@ angular.module('weshare.main', [])
 			// 		$scope.refresher = false;
 			// 	}
 			// });
-			Main.loadMore(last_displayed_stamp)
+			Main.loadMore($scope.categoryId, last_displayed_stamp)
 				.success(function(data){
-					$scope.weshares = Main.weshares;
 						if (data.length > 0){
-							//console.log('weshares after concat: ' + JSON.stringify($scope.weshares));
+							$scope.weshares = Main.weshares;
+							console.log('weshares after concat: ' + JSON.stringify($scope.weshares, null, 4));
 							$scope.$broadcast('scroll.infiniteScrollComplete');	
 							$scope.refresher = true;
 							$scope.last_displayed_stamp = new Date($scope.weshares[$scope.weshares.length-1].createdOn);
@@ -109,16 +168,18 @@ angular.module('weshare.main', [])
 			console.log('weshare in detail: ' + JSON.stringify(weshare));
 		});
 
-		$scope.$watch('liked', function(newVal, oldVal){
-			Main.updateLiked({
-				email: $rootScope.user.email,
-				weshareId: $stateParams.weshareId,
-				liked: $scope.liked
-			});
-		})
+		// $scope.$watch('liked', function(newVal, oldVal){
+		// 	Main.updateLiked({
+		// 		email: $rootScope.user.email,
+		// 		weshareId: $stateParams.weshareId,
+		// 		liked: $scope.liked
+		// 	});
+		// })
 		
 		$scope.flipLiked = function(){
 			$scope.liked = !$scope.liked;
+			Main.liked = $scope.liked;
+			console.log('flipping liked: ' + JSON.stringify(Main.liked));
 		}
 
 		$scope.copy = function(){
@@ -155,28 +216,36 @@ angular.module('weshare.main', [])
 
 	})
 
-	.controller('CreateCtrl', function($scope, $rootScope, $state, $ionicPopup, $cordovaImagePicker, $ionicLoading, Main, S3Uploader){
+	.controller('CreateCtrl', function($scope, $rootScope, $state, $stateParams, $ionicPopup, $cordovaImagePicker, $ionicLoading, $ionicModal, Main, S3Uploader, Category){
 
 		console.log('called CreateCtrl');
 		/*
 		*	Create page
 		*/
 		$scope.weshare = {};
+		Category.getCategories().then(function(){
+			$scope.categories = Category.categories;
+		});
+		
 		$scope.save = function(){
-
 
 			$ionicLoading.show({
 				template: '保存中...'
 			});
 			setTimeout(function(){
+				$scope.weshare.creator = $rootScope.user.id;
+				console.log('weshare.creator: ' + JSON.stringify($scope.weshare.creator, null, 4));
+				console.log('weshare before save: ' + JSON.stringify($scope.weshare, null, 4));
 				Main.save($scope.weshare)
 					.success(function(data){
 						$ionicLoading.hide();
 						$scope.weshare = {};
-						$state.go('main');
+						//$ionicPopup.alert({title: '创建成功', content:''});
+						$state.go('app.main', {"categoryId": $stateParams.parentCategoryId});
 					})
 					.error(function(err){
 						//$ionicPopup.alert({title: 'Oops', content: err});
+						$ionicLoading.hide();
 						console.log('create error: ' + err);
 					});	
 			}, 1000);
@@ -220,13 +289,44 @@ angular.module('weshare.main', [])
 			      console.log();
 			    });
 		}
+
+		$scope.showImages = function(index) {
+			$scope.activeSlide = index;
+			$scope.showModal('templates/image-popover.html');
+		}
+	 
+		$scope.showModal = function(templateUrl) {
+			$ionicModal.fromTemplateUrl(templateUrl, {
+				scope: $scope,
+				animation: 'slide-in-up'
+			}).then(function(modal) {
+				$scope.modal = modal;
+				$scope.modal.show();
+			});
+		}
+	 
+		// Close the modal
+		$scope.closeModal = function() {
+			$scope.modal.hide();
+			$scope.modal.remove()
+		};
+
 	})
 
-	.controller('FilterCtrl', function($scope, Main){
+	.controller('FilterCtrl', function($scope, $rootScope, $state, $window, Main){
 
 		/*
 		*	Filter page
 		*/
+
+
+		$scope.logout = function(){
+			$rootScope.user = null;
+			$window.localStorage.removeItem('user');
+			$window.localStorage.removeItem('token');
+			//$ionicPopup.alert({title: 'Logged out', content: 'Logged out'});	
+			$state.go('welcome');
+		}
 	})
 
 	/*
@@ -235,14 +335,8 @@ angular.module('weshare.main', [])
 	.factory('Main', function($http, $rootScope){
 
 		var o = {
-			weshares : []
-		}
-
-		o.init = function(){
-			$http.get($rootScope.server.url + '/weshares')
-				.success(function(data){
-					o.weshares = data;
-				});
+			weshares: [],
+			liked: false
 		}
 
 		/*
@@ -259,15 +353,15 @@ angular.module('weshare.main', [])
 		*	Main Page
 		*/
 
-		o.all = function(){
-			return $http.get($rootScope.server.url + '/weshares')
+		o.all = function(categoryId){
+			return $http.get($rootScope.server.url + '/weshares?categoryId=' + categoryId)
 				.success(function(data){
 					o.weshares = o.weshares.concat(data);
 				});
 		}
 
-		o.loadMore = function(last_displayed_stamp){
-			return $http.get($rootScope.server.url + '/weshares/loadMore/' + last_displayed_stamp)
+		o.loadMore = function(categoryId, last_displayed_stamp){
+			return $http.get($rootScope.server.url + '/weshares/loadMore?categoryId=' + categoryId + '&last_displayed_stamp=' + last_displayed_stamp)
 				.success(function(data){
 					o.weshares = o.weshares.concat(data);
 				});
@@ -278,7 +372,9 @@ angular.module('weshare.main', [])
 		}
 
 		o.updateLiked = function(params){
-			return $http.put($rootScope.server.url + '/likes/update', params)
+			return $http.put($rootScope.server.url + '/likes/update', params).success(function(data){
+				o.liked = data;
+			});
 		}
 		
 		return o;

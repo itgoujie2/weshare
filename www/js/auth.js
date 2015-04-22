@@ -40,7 +40,7 @@ angular.module('weshare.auth', [])
 			}
 			Auth.signup($scope.user)
 				.success(function(data){
-					$state.go('login');
+					$state.go('app.category');
 				})
 				.error(function(err){
 					$ionicPopup.alert({title: 'Oops', content: err});
@@ -60,7 +60,7 @@ angular.module('weshare.auth', [])
 			Auth.login($scope.user)
 				.success(function(data){
 					$scope.user = {};
-					$state.go('main');
+					$state.go('app.category');
 				})
 				.error(function(err){
 					$ionicPopup.alert({title: 'Oops', content: 'Login failed'});

@@ -1,0 +1,15 @@
+<ion-view class="feeds-categories-view">
+
+	<ion-content>
+    <div class="row categories-list">
+      <div ng-repeat="category in categories" class="col col-50">
+        <a class="feed-category" ui-sref="app.main({categoryId: category._id})">
+          <img class="category-image" ng-src="{{category.img}}"/>
+          <div class="category-bg"></div>
+          <span class="category-title">{{category.title}}</span>
+        </a>
+      </div>
+    </div>
+  </ion-content>
+	
+</ion-view>

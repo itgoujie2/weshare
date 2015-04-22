@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.main', 'weshare.s3uploader', 'ngCordova'])
+angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.main', 'weshare.s3uploader', 'weshare.category', 'ngCordova'])
 
 .run(function($ionicPlatform, $state, $window, $rootScope, SERVER_URL) {
   $ionicPlatform.ready(function() {
@@ -27,13 +27,14 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
     }, function(err){
 
     });
+
   });
 
   var user = JSON.parse($window.localStorage.getItem('user'));
 
   $rootScope.user = user;
   $rootScope.server = {url: SERVER_URL || location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '')};
-  $rootScope.weshares = [];
+
 
   //re-route to welcome page if not authenticaed
   $rootScope.$on('$stateChangeStart', function(event, toState){
@@ -43,24 +44,19 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
       event.preventDefault();
     }
   })
-  $state.go('main');
+  $state.go('app.category');
 })
 
 .config(function($stateProvider, $urlRouterProvider, $httpProvider){
 
   $stateProvider
 
-    .state('tab', {
-      url: '/tab',
-      abstract: true,
-      templateUrl: 'templates/tab.html'
-      //controller: 'TabCtrl'
-    })
-
     .state('welcome', {
       url: "/welcome",
       templateUrl: 'templates/welcome.html'
     })
+
+
 
    //$urlRouterProvider.otherwise('/main');
 
@@ -93,8 +89,11 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
             responseError: function (response) {
                 console.log(JSON.stringify(response));
                 $rootScope.loading = false;
-                if (response && response.status === 401) {
+                if (response ) {
                     // TODO: broadcast event instead.
+                    $window.localStorage.removeItem('token');
+                    $window.localStorage.removeItem('user');
+                    $location.href = $location.origin;
                     $location.path('/welcome');
                 } else if (response && response.status !== 404) {
                     console.log(response);
@@ -105,15 +104,3 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
         };
     })
 
-  .factory('DataLoader', function($rootScope, $http){
-
-    var o = {};
-
-    o.weshares = {};
-
-    $http.get($rootScope.server.url + '/weshares').success(function(results){
-      o.weshares = results;
-    });
-
-    return o;
-  })
