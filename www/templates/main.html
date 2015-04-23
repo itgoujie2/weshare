@@ -17,14 +17,14 @@
 
         <div ng-repeat='weshare in weshares' class="list card">
             <a ui-sref="app.detail({weshareId: weshare._id})" style="text-decoration: none;">
-                <div class="item item-avatar item-button-right">
+                <div class="item item-avatar ">
                     <img src="{{weshare.images[0].url}}" ng-show="weshare.images.length > 0"/>
                     <h2>{{weshare.title}}</h2>
                     <p>{{weshare.createdOn | date: 'MM/d/y'}}</p>
                 </div>
             </a>
-            <div class="item item-body">
-                <p>{{weshare.description | showParts }}</p>
+            <div class="item item-content ">
+                <p class="entry-excerpt">{{weshare.description | showParts }}</p>
             </div>
         </div>
 

@@ -57,14 +57,6 @@ angular.module('weshare.main', [])
 							}
 						}
 					}
-				},
-				onExit: function(Main, $rootScope, $stateParams){
-								console.log('calling onExit');
-								Main.updateLiked({
-									email: $rootScope.user.email,
-									weshareId: $stateParams.weshareId,
-									liked: Main.liked
-								});
 				}
 			})
 	})
@@ -179,6 +171,11 @@ angular.module('weshare.main', [])
 		$scope.flipLiked = function(){
 			$scope.liked = !$scope.liked;
 			Main.liked = $scope.liked;
+			Main.updateLiked({
+				email: $rootScope.user.email,
+				weshareId: $stateParams.weshareId,
+				liked: Main.liked
+			});
 			console.log('flipping liked: ' + JSON.stringify(Main.liked));
 		}
 
@@ -373,7 +370,7 @@ angular.module('weshare.main', [])
 
 		o.updateLiked = function(params){
 			return $http.put($rootScope.server.url + '/likes/update', params).success(function(data){
-				o.liked = data;
+
 			});
 		}
 		
