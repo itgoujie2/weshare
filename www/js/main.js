@@ -59,6 +59,15 @@ angular.module('weshare.main', [])
 					}
 				}
 			})
+			.state('app.profile', {
+				url: '/profile',
+				views: {
+					'menuContent': {
+						templateUrl: 'templates/profile.html',
+						controller: 'ProfileCtrl'
+					}
+				}
+			})
 	})
 
 	/*
@@ -326,6 +335,14 @@ angular.module('weshare.main', [])
 		}
 	})
 
+	.controller('ProfileCtrl', function($scope, $rootScope, Main){
+
+		Main.getUserWeshares().success(function(data){
+			$scope.weshares = data;	
+		});
+		
+	})
+
 	/*
 	*	Services
 	*/
@@ -372,6 +389,10 @@ angular.module('weshare.main', [])
 			return $http.put($rootScope.server.url + '/likes/update', params).success(function(data){
 
 			});
+		}
+
+		o.getUserWeshares = function(){
+			return $http.get($rootScope.server.url + '/userWeshare?userId=' + $rootScope.user.id);
 		}
 		
 		return o;

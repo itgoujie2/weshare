@@ -1,0 +1,16 @@
+<ion-view cache-view="false">
+	
+	<ion-content>
+		
+		<div class="list" ng-repeat="weshare in weshares">
+			<a class="item item-avatar item-icon-right" ui-sref="app.detail({weshareId: weshare._id})">
+				<img src="{{weshare.images[0].url}}"/>
+				<h2>{{weshare.title}}</h2>
+				<p>{{weshare.createdOn | date: 'MM/d/y'}}</p>
+				<i class="icon ion-arrow-right-c"></i>
+			</a>
+		</div>
+		
+		
+	</ion-content>
+</ion-view>

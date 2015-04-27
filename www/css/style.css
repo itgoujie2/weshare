@@ -1,5 +1,82 @@
 /* Empty. Add your own CSS if you like */
 
+.all-elements{
+  position:absolute;
+  overflow-x:hidden!important;  
+  width:100%;
+  height:100%;
+  min-height:100%;
+  max-height:100%;
+}
+
+.overlay{
+  pointer-events:none;
+  position:absolute;
+  width:100%;
+  height:100%;
+  background-color:rgba(0,0,0,0.5);
+  z-index:9999;
+}
+
+.dark {
+  background-color: #3f4041 !important;
+  color: #ffffff;
+}
+
+
+
+
+/* welcome page*/
+.dark-overlay{
+    background-color:rgba(0,0,0,0.7)!important;   
+}
+
+.coverpage-image{ background-size:cover; background-position: center center;}
+
+.bg1{
+    background-image:url(../img/1.jpg);   
+    background-position:center center;
+}
+
+.coverpage-style-2 h3{
+    position:absolute;
+    display:block;
+    width:200px;
+    font-size:32px;
+    line-height:45px;
+    font-weight:800;
+    color:#FFFFFF;
+    z-index:99999;
+    margin-left:25px;
+}
+
+.coverpage-style-2 p{
+    position:absolute;
+    display:block;
+    width:220px;
+    z-index:999999;
+    color:rgba(255,255,255,0.8);
+    margin-left:25px;
+}
+
+.coverpage-button{
+    position:absolute;
+    z-index:99999;
+    border:solid 1px rgba(255,255,255,1);
+    width:100px;
+    height:40px;
+    line-height:38px;
+    text-align:center;
+    color:#FFFFFF;
+    transition:all 250ms ease;
+}
+
+.coverpage-button:hover{
+    background-color:rgba(255,255,255,0.1);
+    color:#FFFFFF;
+}
+
+/* detail page*/
 .profile-pic {
     width: 140px;
     height: 140px;
@@ -39,61 +116,6 @@
     height: 100%;
 }
 
-/*.welcome {
-    background: url('../img/bg.jpg') no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    color: #ffffff;
-}*/
-
-.welcome{
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    z-index: -1;
-    opacity: 0.6;
-    display: block;
-    background: url("../img/bg.jpg") no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    background-size: cover;
-    -webkit-filter: blur(1px);
-    -moz-filter: blur(1px);
-    -o-filter: blur(1px);
-    -ms-filter: blur(1px);
-    filter: blur(1px); 
-}
-
-.welcome .top-content {
-  height: 75%;
-  text-align: center; 
-}
-.welcome .top-content h1 {
-    color: #fff; 
-}
-.welcome .bottom-content {
-  height: 25%;
-  padding-top: 5px;
-  margin-top: 0px; 
-}
-.welcome .bottom-content .button {
-    border: none;
-    color: #fff;
-    font-weight: bolder;
-    font-size: 20px;
-    line-height: 20px; 
-}
-.welcome .bottom-content .login.button {
-    background-color: rgba(104, 159, 247, 0.35); 
-}
-.welcome .bottom-content .sign-up.button {
-    background-color: rgba(248, 248, 248, 0.2); 
-}
 
 /*category*/
 .feeds-categories-view {
@@ -127,4 +149,5 @@
       font-weight: 500;
       text-transform: capitalize; }
 
-      
+
+
