@@ -5,12 +5,20 @@
   </ion-nav-title>
 
 	<ion-content>
-    <div class="row categories-list">
+    <!-- <div class="row categories-list">
       <div ng-repeat="category in categories" class="col col-50">
         <a class="feed-category" ui-sref="app.main({categoryId: category._id})">
           <img class="category-image" ng-src="{{category.img}}"/>
           <div class="category-bg"></div>
           <span class="category-title">{{category.title}}</span>
+        </a>
+      </div>
+    </div> -->
+    <div class="list">
+      <div ng-repeat="category in categories">
+        <a class="item item-icon-left" ui-sref="app.main({categoryId: category._id})">
+          <i class="icon my-icon {{category.img}}"></i>
+            <span style="padding-left: 20px;">{{category.title}}</span>
         </a>
       </div>
     </div>

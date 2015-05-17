@@ -40,10 +40,12 @@ angular.module('weshare.auth', [])
 			}
 			Auth.signup($scope.user)
 				.success(function(data){
+					$scope.user = {};
 					$state.go('app.category');
 				})
 				.error(function(err){
 					$ionicPopup.alert({title: 'Oops', content: err});
+					$state.go('welcome');
 				});
 		}
 	})
@@ -87,7 +89,12 @@ angular.module('weshare.auth', [])
 
 		o.signup = function(user){
 
-			return $http.post($rootScope.server.url + '/signup', user);
+			return $http.post($rootScope.server.url + '/signup', user)
+				.success(function(data){
+					$rootScope.user = data.user;
+					$window.localStorage.user = JSON.stringify(data.user);
+					$window.localStorage.token = data.token;
+				});
 
 		}
 

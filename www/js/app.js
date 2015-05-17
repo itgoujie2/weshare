@@ -3,9 +3,9 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.main', 'weshare.s3uploader', 'weshare.category', 'ngCordova'])
+angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.main', 'weshare.s3uploader', 'weshare.category', 'weshare.directives', 'ngCordova', 'google.places'])
 
-.run(function($ionicPlatform, $state, $window, $rootScope, SERVER_URL) {
+.run(function($ionicPlatform, $state, $window, $ionicLoading, $rootScope, SERVER_URL) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -14,6 +14,7 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
     }
     if(window.StatusBar) {
       StatusBar.styleDefault();
+      //StatusBar.style(1);
     }
 
     $cordovaClipboard.copy().then(function(result){
@@ -35,6 +36,13 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
   $rootScope.user = user;
   $rootScope.server = {url: SERVER_URL || location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '')};
 
+  // $rootScope.$on('loading:show', function() {
+  //   $ionicLoading.show({template: '请稍等'})
+  // })
+
+  // $rootScope.$on('loading:hide', function() {
+  //   $ionicLoading.hide()
+  // })
 
   //re-route to welcome page if not authenticaed
   $rootScope.$on('$stateChangeStart', function(event, toState){
@@ -70,7 +78,8 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
 
         return {
             request: function (config) {
-                $rootScope.loading = true;
+                //$rootScope.loading = true;
+                $rootScope.$broadcast('loading:show');
                 config.headers = config.headers || {};
                 if ($window.localStorage.getItem('token')) {
                     config.headers.authorization = $window.localStorage.getItem('token');
@@ -79,16 +88,19 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
             },
             requestError: function (request) {
                 console.log('request error');
-                $rootScope.loading = false;
+                //$rootScope.loading = false;
+                $rootScope.$broadcast('loading:hide');
                 return $q.reject(request);
             },
             response: function (response) {
-                $rootScope.loading = false;
+                //$rootScope.loading = false;
+                $rootScope.$broadcast('loading:hide');
                 return response || $q.when(response);
             },
             responseError: function (response) {
-                console.log(JSON.stringify(response));
-                $rootScope.loading = false;
+                console.log('response error: ' + JSON.stringify(response));
+                //$rootScope.loading = false;
+                $rootScope.$broadcast('loading:hide');
                 if (response ) {
                     // TODO: broadcast event instead.
                     $window.localStorage.removeItem('token');

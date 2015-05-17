@@ -21,18 +21,25 @@ angular.module('weshare.category', [])
 	/*
 	*	Controllers
 	*/
-	.controller('CategoryCtrl', function($scope, $ionicLoading, Category){
+	.controller('CategoryCtrl', function($scope, $rootScope, $ionicLoading, Category){
 
 		console.log('called CategoryCtrl');
 
-		$ionicLoading.show({
-			template: '请稍等...'
-		});
+		if ($rootScope.loading == true){
+			console.log('showing category loading');
+			$ionicLoading.show({
+				template: '请稍等...'
+			});	
+		}
 
 		Category.getCategories().then(function(){
 			$scope.categories = Category.categories;
 			console.log('categories in CategoryCtrl: ' + JSON.stringify($scope.categories));
-			$ionicLoading.hide();
+			// if ($rootScope.loading == false) {
+			// 	console.log('loading: ' + $rootScope.loading);
+			// 	console.log('hide category loading');
+				$ionicLoading.hide();
+			// }
 		});
 
 	})

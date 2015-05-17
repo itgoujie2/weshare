@@ -6,7 +6,7 @@
 	
 	<ion-content padding="true">
 		<div >
-            <div class="padding" ng-show="weshare.images.length > 0">
+            <div class="padding" ng-cloak ng-show="weshare.images.length > 0">
                 <a class="item item-list-detail">
                     <ion-scroll direction="x">
                       <img ng-repeat="image in weshare.images" ng-src="{{image.url}}" ng-click="showImages($index)" class="image-list-thumb"/>
@@ -15,16 +15,24 @@
             </div>
             <div class="list list-inset" >
                 <label class="item item-input">
-                    <input type="text" placeholder="Wechat Id" ng-model="weshare.wechatId"/>
+                    <input type="text" placeholder=" 微信号" ng-model="weshare.wechatId"/>
                 </label>
                 <label class="item item-input">
-                    <input type="text" placeholder="Title" ng-model="weshare.title"/>
+                    <input type="text" placeholder=" 标题" ng-model="weshare.title"/>
+                </label>
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        分类
+                    </div>
+                    <select ng-model="weshare.category" ng-options="category.title for category in categories">
+                        <option value="">---</option>
+                    </select>
                 </label>
                 <label class="item item-input">
-                    <select ng-model="weshare.category" ng-options="category.title for category in categories"></select>
+                    <input type="text" placeholder=" 城市" g-places-autocomplete options="options" force-selection="true" ng-model="weshare.location">
                 </label>
                 <label class="item item-input">
-                    <textarea placeholder="Description"  rows="15" ng-model="weshare.description">
+                    <textarea placeholder=" 内容"  rows="10" ng-model="weshare.description">
                     </textarea>
                 </label>
                 <button class="button button-block button-royal" ng-click="save()">保存</button>

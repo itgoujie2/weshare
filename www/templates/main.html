@@ -1,4 +1,4 @@
-<ion-view hide-back-button="true" cache-view="true">
+<ion-view hide-back-button="true" cache-view="false">
 
     <!-- <ion-nav-buttons side="left">
         
@@ -7,7 +7,7 @@
         <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
-        <button class="button button-clear" ui-sref="app.create({parentCategoryId: categoryId})">新建</button>
+        <button class="button button-clear" ui-sref="app.filter"><i class="fa fa-filter fa-lg"></i></button>
     </ion-nav-buttons>
     <ion-nav-title>
         <span>微分</span>
@@ -15,10 +15,12 @@
 
     <ion-content padding="true">
 
+        <ion-refresher on-refresh="doRefresh()"></ion-refresher>
+
         <div ng-repeat='weshare in weshares' class="list card">
             <a ui-sref="app.detail({weshareId: weshare._id})" style="text-decoration: none;">
                 <div class="item item-avatar ">
-                    <img src="{{weshare.images[0].url}}" ng-show="weshare.images.length > 0"/>
+                    <img ng-src="{{weshare.images[0].url}}" ng-show="weshare.images.length > 0"/>
                     <h2>{{weshare.title}}</h2>
                     <p>{{weshare.createdOn | date: 'MM/d/y'}}</p>
                 </div>
@@ -26,10 +28,24 @@
             <div class="item item-content ">
                 <p>{{weshare.description | showParts }}</p>
             </div>
+
         </div>
+
+
 
         <ion-infinite-scroll ng-if="refresher" on-infinite="loadMore()"></ion-infinite-scroll>
 
+
+
     </ion-content>
+
+    <div class="float-button">
+          <span class="height-fix">
+            <a ui-sref="app.create({parentCategoryId: categoryId})" class="content">
+              <!-- <i class="ion-plus-round"> </i> -->
+                <i class="fa fa-plus-square"></i>
+            </a>
+          </span>
+        </div>
 
 </ion-view>

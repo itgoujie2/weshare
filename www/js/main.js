@@ -36,12 +36,21 @@ angular.module('weshare.main', [])
 				}
 				
 			})
+			.state('app.setting', {
+				url: '/setting',
+				views:{
+					'menuContent':{
+						templateUrl: 'templates/setting.html',
+						controller: 'SettingCtrl'		
+					}
+				}
+			})
 			.state('app.filter', {
 				url: '/filter',
 				views:{
 					'menuContent':{
 						templateUrl: 'templates/filter.html',
-						controller: 'FilterCtrl'		
+						controller: 'FilterCtrl'
 					}
 				}
 			})
@@ -99,7 +108,8 @@ angular.module('weshare.main', [])
   //           $location.path('/welcome');
 		// }
 		// Main.all($scope.categoryId);
-		$scope.weshares = Main.weshares;
+		Main.weshares = [];
+		//$scope.last_displayed_stamp = new Date($scope.weshares[$scope.weshares.length-1].createdOn);
 		$scope.user = $rootScope.user;
 
 		console.log('categoryId: ' + $scope.categoryId);
@@ -121,7 +131,10 @@ angular.module('weshare.main', [])
 		$scope.refresher = true;
 		$scope.loadMore = function(){
 
-			var last_displayed_stamp = $scope.last_displayed_stamp ? $scope.last_displayed_stamp : new Date;
+			var t = new Date();
+			t.setSeconds(t.getSeconds() + 3);
+
+			var last_displayed_stamp = ($scope.last_displayed_stamp!=undefined) ? $scope.last_displayed_stamp : t;
 
 			// Main.loadMore(last_displayed_stamp).success(function(weshares){
 			// 	console.log('typeof: ' + typeof $scope.weshares);
@@ -137,11 +150,12 @@ angular.module('weshare.main', [])
 			// 		$scope.refresher = false;
 			// 	}
 			// });
+			console.log('last_displayed_stamp: ' + last_displayed_stamp);
 			Main.loadMore($scope.categoryId, last_displayed_stamp)
 				.success(function(data){
 						if (data.length > 0){
 							$scope.weshares = Main.weshares;
-							console.log('weshares after concat: ' + JSON.stringify($scope.weshares, null, 4));
+							//console.log('weshares after concat: ' + JSON.stringify($scope.weshares, null, 4));
 							$scope.$broadcast('scroll.infiniteScrollComplete');	
 							$scope.refresher = true;
 							$scope.last_displayed_stamp = new Date($scope.weshares[$scope.weshares.length-1].createdOn);
@@ -153,10 +167,26 @@ angular.module('weshare.main', [])
 					});
 		}
 
+		$scope.doRefresh = function(){
+			console.log('calling pull to refresh');
+
+			Main.all($scope.categoryId)
+				.success(function(data){
+					if (data.length > 0){
+						$scope.weshares = Main.weshares;
+						$scope.$broadcast('scroll.refreshComplete');
+						$scope.last_displayed_stamp = new Date($scope.weshares[$scope.weshares.length-1].createdOn);
+					}
+					else{
+						$scope.refresher = false;
+					}
+				})
+		}
+
 
 	})
 
-	.controller('DetailCtrl', function($scope, $rootScope, $state, $stateParams, $ionicModal, $cordovaClipboard, liked, Main){
+	.controller('DetailCtrl', function($scope, $rootScope, $state, $stateParams, $ionicLoading, $ionicModal, $cordovaClipboard, $ionicActionSheet, liked, Main){
 
 
 		$scope.weshare = {};
@@ -176,7 +206,10 @@ angular.module('weshare.main', [])
 		// 		liked: $scope.liked
 		// 	});
 		// })
-		
+		$scope.sayHi = function(){
+			console.log('hi');
+		}
+
 		$scope.flipLiked = function(){
 			$scope.liked = !$scope.liked;
 			Main.liked = $scope.liked;
@@ -219,6 +252,43 @@ angular.module('weshare.main', [])
 			$scope.modal.remove()
 		};
 		
+		$scope.showAction = function(imgUrl){
+
+			var actionSheet = $ionicActionSheet.show({
+				buttons:[
+					{text: '保存'}
+				],
+				cancelText: '取消',
+				cancel: function(){
+
+				},
+				buttonClicked: function(index){
+					if (index == 0){
+						var fileName = new Date().getTime() + '.png';
+						$scope.downloadImg(imgUrl, fileName);
+					}
+					return true;
+				}
+			});
+		}
+
+		$scope.downloadImg = function(imgUrl, fileName){
+
+			console.log('imgUrl: ' + imgUrl);
+			console.log('fileName: ' + fileName);
+			console.log('target path: ' + cordova.file.documentsDirectory+fileName);
+
+			var ft = new FileTransfer();
+
+			ft.download(imgUrl, cordova.file.documentsDirectory + fileName,
+				function(entry){
+					console.log('download success: ' + entry.fullPath);
+				},
+				function(error){
+
+				}
+			)
+		}
 
 	})
 
@@ -229,6 +299,11 @@ angular.module('weshare.main', [])
 		*	Create page
 		*/
 		$scope.weshare = {};
+
+		$scope.options = {
+			types: ['(cities)']
+		}
+
 		Category.getCategories().then(function(){
 			$scope.categories = Category.categories;
 		});
@@ -319,7 +394,7 @@ angular.module('weshare.main', [])
 
 	})
 
-	.controller('FilterCtrl', function($scope, $rootScope, $state, $window, Main){
+	.controller('SettingCtrl', function($scope, $rootScope, $state, $window, Main){
 
 		/*
 		*	Filter page
@@ -330,9 +405,24 @@ angular.module('weshare.main', [])
 			$rootScope.user = null;
 			$window.localStorage.removeItem('user');
 			$window.localStorage.removeItem('token');
+			Main.weshares = [];
 			//$ionicPopup.alert({title: 'Logged out', content: 'Logged out'});	
 			$state.go('welcome');
 		}
+	})
+
+	.controller('FilterCtrl', function($scope, Main){
+
+		Main.getCountries()
+			.success(function(data){
+				$scope.countries = data;
+				Main.getStates()
+					.success(function(data){
+						$scope.states = data;
+					});
+			})
+
+
 	})
 
 	.controller('ProfileCtrl', function($scope, $rootScope, Main){
@@ -370,6 +460,7 @@ angular.module('weshare.main', [])
 		o.all = function(categoryId){
 			return $http.get($rootScope.server.url + '/weshares?categoryId=' + categoryId)
 				.success(function(data){
+					o.weshares = [];
 					o.weshares = o.weshares.concat(data);
 				});
 		}
@@ -393,6 +484,17 @@ angular.module('weshare.main', [])
 
 		o.getUserWeshares = function(){
 			return $http.get($rootScope.server.url + '/userWeshare?userId=' + $rootScope.user.id);
+		}
+
+		/*
+		*	Filter Page
+		*/
+		o.getCountries = function(){
+			return $http.get($rootScope.server.url + '/countries');
+		}
+
+		o.getStates = function(){
+			return $http.get($rootScope.server.url + '/states');
 		}
 		
 		return o;
