@@ -16,10 +16,10 @@
           <div class="item item-button-right">
             <h2>微信号: {{weshare.wechatId}}</h2><button class="button button-clear" ng-click="copy()">复制</button>
           </div>
-          <div ng-cloak ng-show="weshare.location != undefined" class="item">
-            <h2>{{weshare.location.formatted_address}}</h2>
+          <div ng-cloak ng-if="weshare.state != undefined || weshare.country != undefined" class="item">
+            <h2>地区: {{weshare.state.label}}, {{weshare.country.label}}</h2>
           </div>
-          <div class="item item-body">
+          <div class="item item-body" ng-if="weshare.images.length > 0">
               <!-- <div ng-repeat="image in weshare.images">
                 <img class="full-image" src="{{image.url}}"/>
               </div> -->

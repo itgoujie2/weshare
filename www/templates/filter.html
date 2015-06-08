@@ -1,7 +1,42 @@
-<ion-view>
+<ion-view cache-view="false">
+
+	<ion-nav-title>
+		Filter
+	</ion-nav-title>
 	
 	<ion-content>
-		filter
+		<div class="list">
+			<label class="item">
+				<span>请选择你想搜索的地区</span>
+			</label>
+
+			<label class="item item-input item-select">
+                <div class="input-label">
+                    国家
+                </div>
+                <select ng-model="filter.country" ng-options="country.label for country in countries">
+                    <option value="">---</option>
+                </select>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    市
+                </div>
+                <select ng-model="filter.state" ng-options="stateDetails.label for (stateId, stateDetails) in filter.country['states']">
+                    <option value="">---</option>
+                </select>
+            </label>
+			<button class="button button-block button-stable" ng-click="addLocationFilter()">添加</button>
+			<button class="button button-block button-stable" ng-click="resetFilter()">重置</button>
+		</div>
+
+		<div class="list">
+			<div ng-repeat="location in locationFilters" >
+				<div class="item">
+					<h3>{{location}}</h3>
+				</div>
+			</div>
+		</div>
 	</ion-content>
 	
 </ion-view>

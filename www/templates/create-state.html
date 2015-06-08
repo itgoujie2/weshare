@@ -1,0 +1,12 @@
+<ion-view cache-view="false">
+	
+	<ion-nav-title>
+		省市
+	</ion-nav-title>
+
+	<ion-content>
+		<div class="item item-divider" style="text-align: center" ng-if="create.country != undefined">{{create.country.label}}</div>
+		<ion-radio ng-model="create.state" ng-repeat="s in states" ng-value="s">{{s.label}}</ion-radio>
+
+	</ion-content>
+</ion-view>

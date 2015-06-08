@@ -17,6 +17,24 @@
 
         <ion-refresher on-refresh="doRefresh()"></ion-refresher>
 
+        <div ng-if="weshares.length == 0 && topItem.length == 0">
+            <h5 style="text-align: center">暂时没有内容</h5>
+        </div>
+
+        <div ng-repeat="t in topItem" class="list card" ng-if="topItem.length > 0">
+            <a ui-sref="app.detail({weshareId: t._id})" style="text-decoration: none;">
+                <div class="item item-avatar ">
+                    <img ng-src="{{t.images[0].url}}" ng-show="t.images.length > 0"/>
+                    <h2 style="color: red; float: right">置顶</h2>
+                    <h2>{{t.title}}</h2>
+                    <p>{{t.createdOn | date: 'MM/d/y'}}</p>
+                </div>
+            </a>
+            <div class="item item-content ">
+                <p>{{t.description | showParts }}</p>
+            </div>
+        </div>
+
         <div ng-repeat='weshare in weshares' class="list card">
             <a ui-sref="app.detail({weshareId: weshare._id})" style="text-decoration: none;">
                 <div class="item item-avatar ">

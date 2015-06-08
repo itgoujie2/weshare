@@ -36,6 +36,8 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
   $rootScope.user = user;
   $rootScope.server = {url: SERVER_URL || location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '')};
 
+  
+
   // $rootScope.$on('loading:show', function() {
   //   $ionicLoading.show({template: '请稍等'})
   // })
@@ -115,4 +117,6 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
             }
         };
     })
+
+  
 

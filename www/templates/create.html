@@ -1,4 +1,4 @@
-<ion-view>
+<ion-view cache-view="true">
 
 	<ion-nav-buttons side="right">
 		<button class="button button-clear" ng-click="addPicture()">传图片</button>
@@ -6,7 +6,7 @@
 	
 	<ion-content padding="true">
 		<div >
-            <div class="padding" ng-cloak ng-show="weshare.images.length > 0">
+            <div class="padding" ng-cloak ng-if="weshare.images.length > 0">
                 <a class="item item-list-detail">
                     <ion-scroll direction="x">
                       <img ng-repeat="image in weshare.images" ng-src="{{image.url}}" ng-click="showImages($index)" class="image-list-thumb"/>
@@ -28,8 +28,21 @@
                         <option value="">---</option>
                     </select>
                 </label>
-                <label class="item item-input">
-                    <input type="text" placeholder=" 城市" g-places-autocomplete options="options" force-selection="true" ng-model="weshare.location">
+                <label class="item item-icon-right" ui-sref="app.createCountry">
+                    <span>国家</span>
+                    <span style="float: right">{{create.country.label}}</span>
+                    <i class="icon ion-ios-arrow-forward"></i>
+                    <!-- <select ng-model="weshare.country" ng-options="country.label for country in countries">
+                        <option value="">---</option>
+                    </select> -->
+                </label>
+                <label class="item item-icon-right" ui-sref="app.createState">
+                    <span>省市</span>
+                    <span style="float: right">{{create.state.label}}</span>
+                    <i class="icon ion-ios-arrow-forward"></i>
+                    <!-- <select ng-model="weshare.state" ng-options="stateDetails.label for (stateId, stateDetails) in weshare.country['states']">
+                        <option value="">---</option>
+                    </select> -->
                 </label>
                 <label class="item item-input">
                     <textarea placeholder=" 内容"  rows="10" ng-model="weshare.description">

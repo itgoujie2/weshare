@@ -34,7 +34,7 @@ angular.module('weshare.category', [])
 
 		Category.getCategories().then(function(){
 			$scope.categories = Category.categories;
-			console.log('categories in CategoryCtrl: ' + JSON.stringify($scope.categories));
+			console.log('categories in CategoryCtrl: ' + JSON.stringify($scope.categories,null,4));
 			// if ($rootScope.loading == false) {
 			// 	console.log('loading: ' + $rootScope.loading);
 			// 	console.log('hide category loading');
