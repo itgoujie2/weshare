@@ -1,0 +1,12 @@
+<ion-view cache-view="true">
+	
+	<ion-nav-title>
+		国家
+	</ion-nav-title>
+
+	<ion-content>
+		<ion-radio ng-model="filter.country" ng-repeat="country in countries" ng-value="country">{{country.label}}</ion-radio>
+
+
+	</ion-content>
+</ion-view>

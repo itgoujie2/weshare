@@ -19,15 +19,16 @@
           <div ng-cloak ng-if="weshare.state != undefined || weshare.country != undefined" class="item">
             <h2>地区: {{weshare.state.label}}, {{weshare.country.label}}</h2>
           </div>
-          <div class="item item-body" ng-if="weshare.images.length > 0">
+          <div class="item item-body">
               <!-- <div ng-repeat="image in weshare.images">
                 <img class="full-image" src="{{image.url}}"/>
               </div> -->
-              <a class="item item-list-detail">
+              <a class="item item-list-detail"  ng-if="weshare.images.length > 0">
                 <ion-scroll direction="x">
                   <img ng-repeat="image in weshare.images" ng-src="{{image.url}}" ng-click="showImages($index)" class="image-list-thumb"/>
                 </ion-scroll>
               </a>
+
               <p>{{weshare.description}}</p>
               
           </div>

@@ -1,7 +1,8 @@
 <div class="modal image-modal transparent" ng-click="closeModal()">
     <ion-slide-box on-slide-changed="slideChanged(index)" show-pager="true" active-slide="activeSlide">
         <ion-slide ng-repeat="image in weshare.images">
-            <img ng-src="{{image.url}}" on-hold="showAction(image.url)" class="fullscreen-image"/>
+            <img ng-src="{{image.url}}" class="fullscreen-image"/>
+            <!-- <img ng-src="{{image.url}}" on-hold="showAction(image.url)" class="fullscreen-image"/> -->
         </ion-slide>
     </ion-slide-box>
 </div>

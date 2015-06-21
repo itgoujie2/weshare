@@ -16,6 +16,7 @@ angular.module('weshare.main', [])
 		      abstract: true,
 		      templateUrl: 'templates/side-menu.html',
 		      controller: 'MainCtrl'
+		      // controller: function(){}
 		    })
 			.state('app.main', {
 				url: '/main/:categoryId',
@@ -50,7 +51,7 @@ angular.module('weshare.main', [])
 				views:{
 					'menuContent':{
 						templateUrl: 'templates/filter.html',
-						controller: 'MainCtrl'
+						controller: 'FilterCtrl'
 					}
 				}
 			})
@@ -95,6 +96,24 @@ angular.module('weshare.main', [])
 					}
 				}
 			})
+			.state('app.filterCountry', {
+				url: '/filterCountry',
+				views: {
+					'menuContent': {
+						templateUrl: 'templates/filter-country.html',
+						controller: 'FilterCtrl'
+					}
+				}
+			})
+			.state('app.filterState', {
+				url: '/filterState',
+				views: {
+					'menuContent': {
+						templateUrl: 'templates/filter-state.html',
+						controller: 'FilterCtrl'
+					}
+				}
+			})
 	})
 
 	/*
@@ -107,10 +126,18 @@ angular.module('weshare.main', [])
 		/*
 		*	Main page
 		*/
-		$scope.categoryId = $stateParams.categoryId;
+		$scope.categoryId = $stateParams.categoryId != undefined ? $stateParams.categoryId : 'rrrrrrrrrrrrrrrrrrrrrrrr';
 		
 		Main.weshares = [];
-		$scope.weshares = Main.weshares;
+		Main.getTop($scope.categoryId)
+			.then(function(data){
+				$scope.topItem = Main.topItem;
+				console.log('top in main: ' + JSON.stringify($scope.topItem));
+				Main.all($scope.categoryId, $rootScope.state).then(function(data){
+					$scope.weshares = Main.weshares;	
+				});
+			})
+		
 		
 		$scope.user = $rootScope.user;
 
@@ -128,11 +155,11 @@ angular.module('weshare.main', [])
 		$scope.refresher = true;
 		$scope.loadMore = function(){
 
-			Main.getTop($scope.categoryId)
-				.then(function(data){
-					$scope.topItem = Main.topItem;
-					console.log('top in main: ' + JSON.stringify($scope.topItem));
-				})
+			// Main.getTop($scope.categoryId)
+			// 	.then(function(data){
+			// 		$scope.topItem = Main.topItem;
+			// 		console.log('top in main: ' + JSON.stringify($scope.topItem));
+			// 	})
 
 			var t = new Date();
 			t.setSeconds(t.getSeconds() + 3);
@@ -140,8 +167,8 @@ angular.module('weshare.main', [])
 			var last_displayed_stamp = ($scope.last_displayed_stamp!=undefined) ? $scope.last_displayed_stamp : t;
 
 			console.log('last_displayed_stamp: ' + last_displayed_stamp);
-			console.log('locationFilters in main: ' + JSON.stringify($scope.filter.state));
-			Main.loadMore($scope.categoryId, last_displayed_stamp, $rootScope.state)
+			console.log('locationFilters in main: ' + JSON.stringify($rootScope.state));
+			Main.loadMore($scope.categoryId, $scope.last_displayed_stamp, $rootScope.state)
 				.success(function(data){
 						if (data.length > 0){
 							$scope.weshares = Main.weshares;
@@ -160,7 +187,7 @@ angular.module('weshare.main', [])
 		$scope.doRefresh = function(){
 			console.log('calling pull to refresh');
 
-			Main.all($scope.categoryId)
+			Main.all($scope.categoryId, $rootScope.state)
 				.success(function(data){
 					if (data.length > 0){
 						$scope.weshares = Main.weshares;
@@ -171,23 +198,39 @@ angular.module('weshare.main', [])
 						$scope.refresher = false;
 					}
 				})
-		}
+		}	
 
+	})
+
+	.controller('FilterCtrl', function($scope, $rootScope, $ionicLoading, Main){
 		/*
 		*	Filter page
 		*/
+		console.log('calling filter controller');
 		
-		//$scope.filter.country = $rootScope.country;
-		//$scope.filter.state = $rootScope.state;
+
+		$scope.$watch('filter.country', function(){
+			console.log('$scope.filter.country on watch: ' + JSON.stringify($scope.filter.country));
+				if ($scope.filter.country != undefined){
+					$scope.states = $scope.filter.country.states;	
+				}
+
+				console.log('$scope.countries: ' + JSON.stringify($scope.countries));
+				console.log('$scope.states: ' + JSON.stringify($scope.states));			
+		})
 		
 		Main.getLocation().then(function(data){
 			$scope.countries = Main.locations;
+
 		})
 
 		$scope.addLocationFilter = function(){
 
 			$rootScope.state = $scope.filter.state.value;
 			$rootScope.country = $scope.filter.country.value;
+
+			console.log('add filter country: ' + $rootScope.country);
+
 			$ionicLoading.show({
 				template: '添加成功'
 			});
@@ -197,10 +240,10 @@ angular.module('weshare.main', [])
 		}
 
 		$scope.resetFilter = function(){
-			$rootScope.state = null;
-			$rootScope.country = null;
-			$scope.filter.country = null;
-			$scope.filter.state = null;
+			$rootScope.state = '';
+			$rootScope.country = '';
+			$scope.filter.country = '';
+			$scope.filter.state = '';
 			$ionicLoading.show({
 				template: '重置成功'
 			});
@@ -208,7 +251,6 @@ angular.module('weshare.main', [])
 				$ionicLoading.hide();
 			}, 200);
 		}
-
 	})
 
 	.controller('DetailCtrl', function($scope, $rootScope, $state, $stateParams, $ionicLoading, $ionicModal, $cordovaClipboard, $ionicActionSheet, liked, Main){
@@ -294,22 +336,73 @@ angular.module('weshare.main', [])
 			});
 		}
 
-		$scope.downloadImg = function(imgUrl, fileName){
+		// $scope.downloadImg = function(imgUrl, fileName){
 
-			console.log('imgUrl: ' + imgUrl);
-			console.log('fileName: ' + fileName);
-			console.log('target path: ' + cordova.file.documentsDirectory+fileName);
+		// 	console.log('imgUrl: ' + imgUrl);
+		// 	console.log('fileName: ' + fileName);
+		// 	console.log('target path: ' + cordova.file.documentsDirectory+fileName);
 
-			var ft = new FileTransfer();
+		// 	var ft = new FileTransfer();
 
-			ft.download(imgUrl, cordova.file.documentsDirectory + fileName,
-				function(entry){
-					console.log('download success: ' + entry.fullPath);
-				},
-				function(error){
+		// 	ft.download(imgUrl, cordova.file.documentsDirectory + fileName,
+		// 		function(entry){
+		// 			console.log('download success: ' + entry.fullPath);
+		// 		},
+		// 		function(error){
 
-				}
-			)
+		// 		}
+		// 	)
+		// }
+		$scope.downloadImg = function(imgUrl, fileName) {
+		    $ionicLoading.show({
+		      template: 'Loading...'
+		    });
+		    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {
+		        fs.root.getDirectory(
+		            "weshare",
+		            {
+		                create: true
+		            },
+		            function(dirEntry) {
+		                dirEntry.getFile(
+		                    fileName, 
+		                    {
+		                        create: true, 
+		                        exclusive: false
+		                    }, 
+		                    function gotFileEntry(fe) {
+		                        //var p = fe.toURL();
+		                        var p = fs.root.toURL();
+		                        fe.remove();
+		                        ft = new FileTransfer();
+		                        ft.download(
+		                            encodeURI(imgUrl),
+		                            p,
+		                            function(entry) {
+		                                $ionicLoading.hide();
+		                                $scope.imgFile = entry.toURL();
+		                                console.log('imgFile: ' + $scope.imgFile);
+		                            },
+		                            function(error) {
+		                                $ionicLoading.hide();
+		                                alert("Download Error Source -> " + JSON.stringify(error));
+		                            },
+		                            false,
+		                            null
+		                        );
+		                    }, 
+		                    function() {
+		                        $ionicLoading.hide();
+		                        console.log("Get file failed");
+		                    }
+		                );
+		            }
+		        );
+		    },
+		    function() {
+		        $ionicLoading.hide();
+		        console.log("Request for filesystem failed");
+		    });
 		}
 
 	})
@@ -326,22 +419,17 @@ angular.module('weshare.main', [])
 			$scope.categories = Category.categories;
 		});
 
-		Main.getLocation().then(function(data){
-			$scope.countries = Main.locations;
-
-			if ($scope.create.country != undefined){
-
-				console.log('$scope.create.country: ' + $scope.create.country);
-				$scope.states = $scope.create.country.states;	
-
-				// $scope.states = [];
-				// $scope.countries.forEach(function(elem, index, array){
-				// 	$scope.states.push(elem.states);
-				// });
+		$scope.$watch('create.country', function(){
+				if ($scope.create.country != undefined){
+					$scope.states = $scope.create.country.states;	
+				}
 
 				console.log('$scope.countries: ' + JSON.stringify($scope.countries));
-				console.log('$scope.states: ' + JSON.stringify($scope.states));
-			}
+				console.log('$scope.states: ' + JSON.stringify($scope.states));			
+		})
+
+		Main.getLocation().then(function(data){
+			$scope.countries = Main.locations;
 		})
 		
 		$scope.save = function(){
@@ -359,6 +447,7 @@ angular.module('weshare.main', [])
 					.success(function(data){
 						$ionicLoading.hide();
 						$scope.weshare = {};
+						$scope.create = {};
 						//$ionicPopup.alert({title: '创建成功', content:''});
 						$state.go('app.main', {"categoryId": $stateParams.parentCategoryId});
 					})
@@ -454,6 +543,12 @@ angular.module('weshare.main', [])
 		Main.getUserWeshares().success(function(data){
 			$scope.weshares = data;	
 		});
+
+		$scope.showDelete = true;
+
+		$scope.delete = function(){
+			console.log('delete in profile');
+		}
 		
 	})
 
@@ -483,10 +578,9 @@ angular.module('weshare.main', [])
 		*	Main Page
 		*/
 
-		o.all = function(categoryId){
-			return $http.get($rootScope.server.url + '/weshares?categoryId=' + categoryId)
+		o.all = function(categoryId, stateFilter){
+			return $http.get($rootScope.server.url + '/weshares?categoryId=' + categoryId + '&stateFilter=' + stateFilter)
 				.success(function(data){
-					o.weshares = [];
 					o.weshares = o.weshares.concat(data);
 				});
 		}

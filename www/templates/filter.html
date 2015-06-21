@@ -1,4 +1,4 @@
-<ion-view cache-view="false">
+<ion-view cache-view="true">
 
 	<ion-nav-title>
 		Filter
@@ -10,21 +10,21 @@
 				<span>请选择你想搜索的地区</span>
 			</label>
 
-			<label class="item item-input item-select">
-                <div class="input-label">
-                    国家
-                </div>
-                <select ng-model="filter.country" ng-options="country.label for country in countries">
+			<label class="item item-icon-right" ui-sref="app.filterCountry">
+                <span>国家</span>
+                <span style="float: right">{{filter.country.label}}</span>
+                <i class="icon ion-ios-arrow-forward"></i>
+                <!-- <select ng-model="filter.country" ng-options="country.label for country in countries">
                     <option value="">---</option>
-                </select>
+                </select> -->
             </label>
-            <label class="item item-input item-select">
-                <div class="input-label">
-                    市
-                </div>
-                <select ng-model="filter.state" ng-options="stateDetails.label for (stateId, stateDetails) in filter.country['states']">
+            <label class="item item-icon-right" ui-sref="app.filterState">
+                <span>省市</span>
+                <span style="float: right">{{filter.state.label}}</span>
+                <i class="icon ion-ios-arrow-forward"></i>
+                <!-- <select ng-model="filter.state" ng-options="stateDetails.label for (stateId, stateDetails) in filter.country['states']">
                     <option value="">---</option>
-                </select>
+                </select> -->
             </label>
 			<button class="button button-block button-stable" ng-click="addLocationFilter()">添加</button>
 			<button class="button button-block button-stable" ng-click="resetFilter()">重置</button>

@@ -51,7 +51,7 @@
 
 
 
-        <ion-infinite-scroll ng-if="refresher" on-infinite="loadMore()"></ion-infinite-scroll>
+        <ion-infinite-scroll immediate-check="false" ng-if="refresher" on-infinite="loadMore()"></ion-infinite-scroll>
 
 
 

@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.main', 'weshare.s3uploader', 'weshare.category', 'weshare.directives', 'ngCordova', 'google.places'])
+angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.main', 'weshare.s3uploader', 'weshare.category', 'weshare.directives', 'ngCordova'])
 
 .run(function($ionicPlatform, $state, $window, $ionicLoading, $rootScope, SERVER_URL) {
   $ionicPlatform.ready(function() {
