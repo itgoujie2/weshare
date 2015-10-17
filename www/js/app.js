@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.main', 'weshare.s3uploader', 'weshare.category', 'weshare.directives', 'ngCordova'])
+angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.main', 'weshare.s3uploader', 'weshare.category', 'weshare.feedback', 'ionic.rating', 'weshare.directives', 'ngCordova'])
 
 .run(function($ionicPlatform, $state, $window, $ionicLoading, $rootScope, SERVER_URL) {
   $ionicPlatform.ready(function() {
@@ -48,7 +48,7 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
 
   //re-route to welcome page if not authenticaed
   $rootScope.$on('$stateChangeStart', function(event, toState){
-    if (toState.name !== 'login' && toState.name !== 'signup' && toState.name !== 'logout' && toState.name !== 'welcome' && !$window.localStorage.getItem('token')){
+    if (toState.name !== 'login' && toState.name !== 'signup' && toState.name !== 'logout' && toState.name !== 'welcome' && toState.name != 'legal' && !$window.localStorage.getItem('token')){
       console.log('toState: ' + JSON.stringify(toState));
       $state.go('welcome');
       event.preventDefault();

@@ -1,6 +1,6 @@
-<ion-side-menus enable-menu-with-back-views="false" cache-view="false">
+<ion-side-menus enable-menu-with-back-views="false" cache-view="true">
   <ion-side-menu-content>
-    <ion-nav-bar class="bar-dark">
+    <ion-nav-bar class="bar-light">
       <ion-nav-back-button class="button-clear">
         返回
       </ion-nav-back-button>
@@ -22,11 +22,19 @@
           <p class="message">Welcome back</p>
         </ion-item>
         <ion-item class="item-icon-left" nav-clear menu-close ui-sref="app.category">
-            <i class="icon ion-ios-copy"></i>
+            <i class="icon my-icon ion-ios-copy"></i>
             <h2 class="menu-text">分类</h2>
         </ion-item>
+        <ion-item class="item-icon-left" nav-clear menu-close ui-sref="app.feedback">
+            <i class="icon my-icon ion-email"></i>
+            <h2 class="menu-text">意见反馈</h2>
+        </ion-item>
+        <ion-item class="item-icon-left" nav-clear menu-close ui-sref="app.legal">
+            <i class="icon my-icon fa fa-gavel"></i>
+            <h2 class="menu-text">免责申明</h2>
+        </ion-item>
         <ion-item class="item-icon-left" nav-clear menu-close ui-sref="app.setting">
-            <i class="icon ion-gear-a"></i>
+            <i class="icon my-icon ion-gear-a"></i>
             <h2 class="menu-text">设置</h2>
         </ion-item>
 

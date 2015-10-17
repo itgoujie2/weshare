@@ -2,12 +2,26 @@
 	
 	<ion-content>
 		
-		<div class="list" ng-repeat="weshare in weshares" show-delete="true">
-			<div class="item item-avatar item-icon-right" ui-sref="app.detail({weshareId: weshare._id})">
-				<img ng-src="{{weshare.images[0].url}}"/>
-				<h2>{{weshare.title}}</h2>
-				<p>{{weshare.createdOn | date: 'MM/d/y'}}</p>
-				<!-- <i ng-click="delete()" class="icon ion-trash-a"></i> -->
+		<div class="list" ng-repeat="weshare in weshares">
+			<div class="item-icon-right">
+				<a class="item item-avatar" ui-sref="app.detail({weshareId: weshare._id})">
+					<img ng-src="{{weshare.images[0].url}}"/>
+					<h2>{{weshare.title}}</h2>
+					<p>{{weshare.createdOn | date: 'MM/d/y'}}</p>
+				</a>
+				<i ng-click="delete(weshare._id, $index)" class="icon ion-trash-a"></i>
+			</div>
+		</div>
+
+		<div class="list" ng-repeat="feedback in feedbacks">
+			<div class="item-icon-right">
+				<div class="item item-avatar">
+					<h2>评价: {{feedback.rating}}</h2>
+					<p>{{feedback.content | showParts}}</p>
+					<p>{{feedback.newFeature | showParts}}</p>
+					<p>{{feedback.createdOn | date: 'MM/d/y'}}</p>
+				</div>
+				<i ng-click="delete1(feedback._id, $index)" class="icon ion-trash-a"></i>
 			</div>
 		</div>
 		

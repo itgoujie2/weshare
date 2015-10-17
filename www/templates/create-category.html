@@ -1,0 +1,10 @@
+<ion-view cache-view="true">
+
+	<ion-content>
+		<label class="item item-input">
+        	<input type="text" placeholder="请输入你要寻找的微分" ng-model="searchText"/>
+      	</label>
+		<ion-radio ng-model="create.category" ng-repeat="category in categories | filter:searchText" ng-value="category">{{category.title}}</ion-radio>
+
+	</ion-content>
+</ion-view>

@@ -1,0 +1,55 @@
+<ion-view cache-view="true">
+
+    <ion-nav-buttons side="right">
+        <button class="button button-clear" ng-click="addPicture()">传图片</button>
+    </ion-nav-buttons>
+    
+    <ion-content padding="true">
+        <div >
+            <div class="padding" ng-cloak ng-if="weshare.images.length > 0">
+                <a class="item item-list-detail">
+                    <ion-scroll direction="x">
+                      <img ng-repeat="image in weshare.images" ng-src="{{image.url}}" ng-click="showImages($index)" class="image-list-thumb"/>
+                    </ion-scroll>
+                </a>
+            </div>
+            <div class="list list-inset" >
+                <label class="item item-input">
+                    <input type="text" placeholder=" 微信号" ng-model="weshare.wechatId"/>
+                </label>
+                <label class="item item-input">
+                    <input type="text" placeholder=" 标题" ng-model="weshare.title"/>
+                </label>
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        分类
+                    </div>
+                    <select ng-model="weshare.category" ng-options="category.title for category in categories">
+                        <option value="">---</option>
+                    </select>
+                </label>
+                <label class="item item-icon-right" ui-sref="app.createCountry">
+                    <span>国家</span>
+                    <span style="float: right">{{weshare.country.label}}</span>
+                    <i class="icon ion-ios-arrow-forward"></i>
+                    <!-- <select ng-model="weshare.country" ng-options="country.label for country in countries">
+                        <option value="">---</option>
+                    </select> -->
+                </label>
+                <label class="item item-icon-right" ui-sref="app.createState">
+                    <span>省市</span>
+                    <span style="float: right">{{weshare.state.label}}</span>
+                    <i class="icon ion-ios-arrow-forward"></i>
+                    <!-- <select ng-model="weshare.state" ng-options="stateDetails.label for (stateId, stateDetails) in weshare.country['states']">
+                        <option value="">---</option>
+                    </select> -->
+                </label>
+                <label class="item item-input">
+                    <textarea placeholder=" 内容"  rows="10" ng-model="weshare.description">
+                    </textarea>
+                </label>
+                <button class="button button-block button-royal" ng-click="save()">保存</button>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

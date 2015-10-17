@@ -159,6 +159,17 @@ input.reset-field { padding-right: 20px; }
     height: 100%;
 }
 
+/*rating*/
+ul.rating li {
+  display: inline;
+  border: 0px;
+  background: none;
+  padding: 5px 10px;
+}
+ul.rating li i {
+  font-size: 25px;
+}
+
 
 /*category*/
 .feeds-categories-view {
@@ -192,5 +203,8 @@ input.reset-field { padding-right: 20px; }
       font-weight: 500;
       text-transform: capitalize; }
 
-
+/*title*/
+.item-title{
+  white-space: normal;
+}
 

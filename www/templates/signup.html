@@ -1,6 +1,6 @@
-<ion-view>
+<ion-view title="注册">
 
-    <ion-nav-bar class="bar-dark">
+    <ion-nav-bar class="bar-light">
         <ion-nav-back-button class="button-clear">
             返回
         </ion-nav-back-button>
@@ -10,21 +10,22 @@
         <div class="list list-inset" style="margin-top: 0px;">
 
             <label class="item item-input">
-                <input type="email" placeholder="Email" ng-model="user.email">
+                <input type="email" placeholder="邮箱" ng-model="user.email" required>
             </label>
             <label class="item item-input">
-                <input type="text" placeholder="NickName" ng-model="user.nickname">
+                <input type="text" placeholder="昵称" ng-model="user.nickname" required>
             </label>
             <label class="item item-input">
-                <input type="password" placeholder="Password" ng-model="user.password">
+                <input type="password" placeholder="密码(大于6位)" ng-model="user.password" required>
             </label>
             <label class="item item-input">
-                <input type="password" placeholder="Re-enter password" ng-model="user.password2">
+                <input type="password" placeholder="再次输入密码" ng-model="user.password2" required>
             </label>
 
             <button class="button button-block button-stable" ng-click="signup()">
-                Sign Up
+                注册
             </button>
+            点击注册意味着你同意微分的<a ui-sref="legal">免责申明</a>
 
         </div>
 

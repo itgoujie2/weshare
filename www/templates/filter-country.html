@@ -5,7 +5,7 @@
 	</ion-nav-title>
 
 	<ion-content>
-		<ion-radio ng-model="filter.country" ng-repeat="country in countries" ng-value="country">{{country.label}}</ion-radio>
+		<ion-radio ng-model="filter.country" ng-repeat="country in countries | filter:searchText" ng-value="country">{{country.label}}</ion-radio>
 
 
 	</ion-content>

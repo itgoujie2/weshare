@@ -15,7 +15,10 @@
       </div>
     </div> -->
     <div class="list">
-      <div ng-repeat="category in categories">
+      <label class="item item-input">
+        <input type="text" placeholder="请输入你要寻找的微分" ng-model="searchText"/>
+      </label>
+      <div ng-repeat="category in categories | filter:searchText">
         <a class="item item-icon-left" ui-sref="app.main({categoryId: category._id})">
           <i class="icon my-icon {{category.img}}"></i>
             <span style="padding-left: 20px;">{{category.title}}</span>

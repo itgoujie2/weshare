@@ -23,6 +23,11 @@ angular.module('weshare.auth', [])
 				templateUrl: 'templates/logout.html',
 				controller: 'LogoutCtrl'
 			})
+
+			.state('legal', {
+				url: '/legal',
+				templateUrl: 'templates/legal.html'
+			})
 	})
 
 
@@ -34,18 +39,38 @@ angular.module('weshare.auth', [])
 		$scope.user = {};
 
 		$scope.signup = function(){
-			if ($scope.user.password != $scope.user.password2){
-				$ionicPopup.alert({title: 'Oops', content: 'Passwords do not match'});
-				return;
-			}
+
 			Auth.signup($scope.user)
 				.success(function(data){
 					$scope.user = {};
+					console.log('user registered: ' + data.user.email);
 					$state.go('app.category');
 				})
 				.error(function(err){
-					$ionicPopup.alert({title: 'Oops', content: err});
-					$state.go('welcome');
+					var customErr;
+
+					if (err.indexOf('email duplicate error')>-1){
+						customErr = '邮箱已被注册';
+					}
+					else if (err.indexOf('nickname duplicate error')>-1){
+						customErr = '昵称已被使用';
+					}
+					else if (err.indexOf('invalid email error')>-1){
+						customErr = '邮箱格式错误';
+					}
+					else if (err.indexOf('password length error')>-1){
+						customErr = '密码需要大于6位'
+					}
+
+					$ionicPopup.show({
+						title: '注册失败', 
+						content: customErr,
+						buttons: [{
+							text: '<b>确定</b>',
+							type: 'button-dark'
+						}]
+					});
+
 				});
 		}
 	})
@@ -62,10 +87,11 @@ angular.module('weshare.auth', [])
 			Auth.login($scope.user)
 				.success(function(data){
 					$scope.user = {};
+					console.log('user logged in: ' + data.user.email);
 					$state.go('app.category');
 				})
 				.error(function(err){
-					$ionicPopup.alert({title: 'Oops', content: 'Login failed'});
+					$ionicPopup.alert({title: '登录失败', content: '请重新登录'});
 					$state.go('welcome');
 				})
 		}
@@ -73,12 +99,17 @@ angular.module('weshare.auth', [])
 
 	.controller('LogoutCtrl', function($scope, $rootScope, $window, $ionicPopup, $state){
 		$scope.logout = function(){
+			console.log('user logged out: ' + $rootScope.user.email);
 			$rootScope.user = null;
 			$window.localStorage.removeItem('user');
 			$window.localStorage.removeItem('token');
 			$ionicPopup.alert({title: 'Logged out', content: 'Logged out'});	
 			$state.go('welcome');
 		}
+	})
+
+	.controller('LegalCtrl', function(){
+
 	})
 
 	/*

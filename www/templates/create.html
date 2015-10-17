@@ -20,13 +20,16 @@
                 <label class="item item-input">
                     <input type="text" placeholder=" 标题" ng-model="weshare.title"/>
                 </label>
-                <label class="item item-input item-select">
-                    <div class="input-label">
+                <label class="item item-icon-right" ui-sref="app.createCategory">
+                    <!-- <div class="input-label">
                         分类
-                    </div>
-                    <select ng-model="weshare.category" ng-options="category.title for category in categories">
+                    </div> -->
+                    <!-- <select ng-model="weshare.category" ng-options="category.title for category in categories">
                         <option value="">---</option>
-                    </select>
+                    </select> -->
+                    <span>分类</span>
+                    <span style="float: right">{{create.category.title}}</span>
+                    <i class="icon ion-ios-arrow-forward"></i>
                 </label>
                 <label class="item item-icon-right" ui-sref="app.createCountry">
                     <span>国家</span>

@@ -5,8 +5,10 @@
 	</ion-nav-title>
 
 	<ion-content>
-		<div class="item item-divider" style="text-align: center" ng-if="create.country != undefined">{{filter.country.label}}</div>
-		<ion-radio ng-model="filter.state" ng-repeat="s in states" ng-value="s">{{s.label}}</ion-radio>
+		<label class="item item-input">
+      	  <input type="text" placeholder="请输入你要寻找的省市" ng-model="searchText"/>
+      	</label>
+		<ion-radio ng-model="filter.state" ng-repeat="s in states | filter:searchText" ng-value="s">{{s.label}}</ion-radio>
 
 	</ion-content>
 </ion-view>

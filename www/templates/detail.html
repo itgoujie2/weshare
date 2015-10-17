@@ -4,10 +4,14 @@
         <span>微分</span>
   </ion-nav-title>
 
+  <ion-nav-buttons side="right">
+    <button class="button button-clear" ng-click="report()">举报</button>
+  </ion-nav-buttons>
+
   <ion-content has-header="true" padding="true">
 
       <div class="list card">
-          <div class="item item-button-right">
+          <div class="item item-button-right  item-text-wrap">
               <h2>{{weshare.title}}</h2>
               <p>{{weshare.createdOn | date: 'MM/d/y'}}</p>
               <button ng-if="liked!=true" ng-click="flipLiked()" class="button button-icon ion-android-favorite-outline"></button>
