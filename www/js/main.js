@@ -139,7 +139,7 @@ angular.module('weshare.main', ['weshare.feedback'])
 	/*
 	*	Controllers
 	*/
-	.controller('MainCtrl', function($scope, $rootScope, $state, $stateParams, $window, $location, $ionicPopup, $cordovaImagePicker, $ionicLoading, S3Uploader, Main){
+	.controller('MainCtrl', function($scope, $rootScope, $state, $stateParams, $window, $location, $ionicPopup, $cordovaImagePicker, $ionicLoading, $cordovaAppRate, S3Uploader, Main){
 
 		console.log('called MainCtrl');
 
@@ -215,6 +215,14 @@ angular.module('weshare.main', ['weshare.feedback'])
 					}
 				})
 		}	
+
+		$scope.rate = function(){
+			console.log('rate');
+
+			$cordovaAppRate.navigateToAppStore().then(function (result) {
+		        // success
+		    });
+		}
 
 	})
 

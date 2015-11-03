@@ -2,6 +2,10 @@
 	
 	<ion-content>
 		
+		<div class="item item-divider">
+			我的微分
+		</div>
+
 		<div class="list" ng-repeat="weshare in weshares">
 			<div class="item-icon-right">
 				<a class="item item-avatar" ui-sref="app.detail({weshareId: weshare._id})">
@@ -11,6 +15,10 @@
 				</a>
 				<i ng-click="delete(weshare._id, $index)" class="icon ion-trash-a"></i>
 			</div>
+		</div>
+
+		<div class="item item-divider" ng-if="feedbacks.length > 0">
+			我的反馈
 		</div>
 
 		<div class="list" ng-repeat="feedback in feedbacks">

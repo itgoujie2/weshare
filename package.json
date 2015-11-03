@@ -19,6 +19,7 @@
     "https://github.com/wymsee/cordova-imagePicker.git",
     "https://github.com/apache/cordova-plugin-file-transfer.git",
     "org.apache.cordova.splashscreen",
-    "org.apache.cordova.statusbar"
+    "org.apache.cordova.statusbar",
+    "https://github.com/pushandplay/cordova-plugin-apprate.git"
   ]
 }

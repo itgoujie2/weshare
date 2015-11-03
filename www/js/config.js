@@ -6,4 +6,5 @@ angular.module('weshare.config', [])
 	//.constant('SERVER_URL', 'http://52.10.127.154:80');
 	//.constant('SERVER_URL', 'http://ios.weifen.io');//routing
 	//.constant('SERVER_URL', 'http://101.200.237.90:3000');
-	.constant('SERVER_URL', 'http://101.201.171.51:80');//aliyun SLB
+	// .constant('SERVER_URL', 'http://101.201.171.51:80');//aliyun SLB
+	.constant('SERVER_URL', 'http://119.254.102.191:3000');//qingcloud

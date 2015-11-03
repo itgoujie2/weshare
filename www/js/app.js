@@ -5,29 +5,47 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.main', 'weshare.s3uploader', 'weshare.category', 'weshare.feedback', 'ionic.rating', 'weshare.directives', 'ngCordova'])
 
-.run(function($ionicPlatform, $state, $window, $ionicLoading, $rootScope, SERVER_URL) {
+.run(function($ionicPlatform, $state, $window, $ionicLoading, $rootScope, $cordovaStatusbar, $cordovaSplashscreen, SERVER_URL) {
   $ionicPlatform.ready(function() {
+
+    /*
+      splash screen
+    */
+    $cordovaSplashscreen.hide();
+    // setTimeout(function() {
+    //     navigator.splashscreen.hide();
+    // }, 3000);
+
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
-    if(window.StatusBar) {
-      StatusBar.styleDefault();
-      //StatusBar.style(1);
-    }
+    
+    /*
+      status bar
+    */
+    $cordovaStatusbar.overlaysWebView(true);
+    $cordovaStatusbar.style(0);
 
+    /*
+      clipboard
+    */
     $cordovaClipboard.copy().then(function(result){
       console.log('copy result: ' + result);
     }, function(err){
 
     });
 
+    /*
+      image picker
+    */
     $cordovaImagePicker.getPictures(function(results){
 
     }, function(err){
 
     });
+
 
   });
 
@@ -57,7 +75,7 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
   $state.go('app.category');
 })
 
-.config(function($stateProvider, $urlRouterProvider, $httpProvider){
+.config(function($stateProvider, $urlRouterProvider, $httpProvider, $cordovaAppRateProvider){
 
   $stateProvider
 
@@ -68,9 +86,19 @@ angular.module('weshare', ['ionic', 'weshare.auth', 'weshare.config', 'weshare.m
 
 
 
-   //$urlRouterProvider.otherwise('/main');
+    //$urlRouterProvider.otherwise('/main');
 
-  $httpProvider.interceptors.push('AuthInterceptor');
+    $httpProvider.interceptors.push('AuthInterceptor');
+
+    // /*
+    //   app rating
+    // */
+    // var prefs = {
+    //  language: 'en',
+    //  appName: '微分',
+    //  iosURL: 'com.ionicframework.weshare583914'
+    // };
+    // $cordovaAppRateProvider.setPreferences(prefs);
 })
 
     // XMLHTTPRequest Interceptor.
